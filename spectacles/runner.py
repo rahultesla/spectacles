@@ -243,6 +243,7 @@ class Runner:
         concurrency: int = 10,
         profile: bool = False,
         runtime_threshold: int = 5,
+        ignore_hidden_fields: bool = False,
     ) -> JsonDict:
         if filters is None:
             filters = ["*/*"]
@@ -254,7 +255,11 @@ class Runner:
             base_ref = self.branch_manager.ref  # Resolve the full ref after checkout
             logger.debug("Building explore tests for the desired ref")
             project = build_project(
-                self.client, name=self.project, filters=filters, include_dimensions=True
+                self.client,
+                name=self.project,
+                filters=filters,
+                include_dimensions=True,
+                ignore_hidden_fields=ignore_hidden_fields,
             )
             base_tests = validator.create_tests(project, compile_sql=incremental)
 
@@ -280,6 +285,7 @@ class Runner:
                     name=self.project,
                     filters=filters,
                     include_dimensions=True,
+                    ignore_hidden_fields=ignore_hidden_fields,
                 )
                 target_tests = validator.create_tests(target_project, compile_sql=True)
                 unique_target_tests = set(target_tests)
